@@ -28,12 +28,21 @@ window.onload = renderBoard(8, 8);
 document.getElementById('chessboard').onclick = function(e) {
     const x = e.target.getAttribute('i');
     const y = e.target.getAttribute('j');
-    let vertices = [];
+    let vertices = [[parseInt(x),parseInt(y)]];
+
+    // finding all the possible vertices
     vertices = vertices.concat(createVertices('inc', 'dec', x, y, 8, 8));
     vertices = vertices.concat(createVertices('dec', 'inc', x, y, 8, 8));
     vertices = vertices.concat(createVertices('inc', 'inc', x, y, 8, 8));
     vertices = vertices.concat(createVertices('dec', 'dec', x, y, 8, 8));
 
+    // clear background colour which was applied from the previous click
+    let selectedList = Object.values(document.querySelectorAll('#chessboard div div.bgRed'));
+    selectedList.length ? selectedList.map((eachVertex)=> {
+        eachVertex.classList.remove('bgRed');
+    }) : '';
+
+    // applying background colour for all possible diagonal vertices from the selected vertex
     for (var i=0; i<vertices.length; i++) {
         let id = 'block_' + vertices[i][0] + vertices[i][1];
         document.getElementById(id).classList.add('bgRed');
@@ -42,6 +51,9 @@ document.getElementById('chessboard').onclick = function(e) {
 
 function createVertices(operX, operY, x, y, w, h) {
     let generatedVertices = [], vertecX = [], vertecY = [];
+
+    x = operX == 'inc' ? ++x : --x;
+    y = operY == 'inc' ? ++y : --y;
     for (var i=x; 1<=x && x<=w; i++) {
         vertecX.push(operX == 'inc' ? x++ : x--);
     }
